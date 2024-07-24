@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Health App',
-      home: const MyHomePage(title: 'Health App'),
+      home: MyHomePage(title: 'Health App'),
     );
   }
 }
@@ -47,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
-        title: Text(widget.title, style: TextStyle(color: Colors.white)),
+        title: Text(widget.title, style: const TextStyle(color: Colors.white)),
         centerTitle: true,
         elevation: 0,
       ),
@@ -77,7 +77,7 @@ class HomeScreen extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.blueAccent, Colors.purpleAccent],
+          colors: [Colors.black, Colors.deepPurpleAccent],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -87,10 +87,10 @@ class HomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              margin: EdgeInsets.all(20),
-              padding: EdgeInsets.all(20),
+              margin: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Colors.white.withOpacity(0.9),
                 borderRadius: BorderRadius.circular(10),
                 boxShadow: const [
                   BoxShadow(
@@ -115,14 +115,14 @@ class HomeScreen extends StatelessWidget {
                         shadows: [
                           Shadow(
                             color: Colors.black.withOpacity(0.4),
-                            offset: Offset(2, 2),
+                            offset: const Offset(2, 2),
                             blurRadius: 6,
                           ),
                         ],
                       ),
                     ),
                   ),
-                  SizedBox(width:3),
+                  const SizedBox(width: 3),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(16),
                     child: Image.asset(
@@ -148,7 +148,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Row(
                 children: [
                   Expanded(
@@ -174,7 +174,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 20),
+                  const SizedBox(width: 20),
                   Expanded(
                     child: InkWell(
                       onTap: () {
@@ -201,8 +201,8 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 10,),
-             Container(
+            const SizedBox(height: 10),
+            Container(
               margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: const Text(
                 'Essential Health Insights',
@@ -214,7 +214,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10),
             Container(
               child: Center(
                 child: Column(
@@ -233,7 +233,7 @@ class HomeScreen extends StatelessWidget {
                               height: 250,
                               fit: BoxFit.cover,
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             const Text(
                               'Hypertension',
                               style: TextStyle(
@@ -242,7 +242,7 @@ class HomeScreen extends StatelessWidget {
                                 color: Colors.black,
                               ),
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             const Text(
                               'A comprehensive guide on what high blood pressure is, its causes, symptoms, and how to manage it through lifestyle changes, medication, and regular monitoring.',
                               style: TextStyle(
@@ -269,7 +269,7 @@ class HomeScreen extends StatelessWidget {
                               height: 250,
                               fit: BoxFit.cover,
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             const Text(
                               'Diabetes Management 101',
                               style: TextStyle(
@@ -278,7 +278,7 @@ class HomeScreen extends StatelessWidget {
                                 color: Colors.black,
                               ),
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             const Text(
                               'Detailed information on the different types of diabetes (Type 1 and Type 2), their symptoms, and effective strategies for managing blood sugar levels, including diet and exercise tips.',
                               style: TextStyle(
@@ -305,7 +305,7 @@ class HomeScreen extends StatelessWidget {
                               height: 250,
                               fit: BoxFit.cover,
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             const Text(
                               'Heart Health',
                               style: TextStyle(
@@ -314,7 +314,7 @@ class HomeScreen extends StatelessWidget {
                                 color: Colors.black,
                               ),
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             const Text(
                               'Information on common heart diseases, their risk factors, preventive measures, and lifestyle changes to promote cardiovascular health.',
                               style: TextStyle(
@@ -341,7 +341,7 @@ class HomeScreen extends StatelessWidget {
                               height: 250,
                               fit: BoxFit.cover,
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             const Text(
                               'Cancer Awareness and Prevention',
                               style: TextStyle(
@@ -350,7 +350,7 @@ class HomeScreen extends StatelessWidget {
                                 color: Colors.black,
                               ),
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             const Text(
                               'Educational content on various types of cancer, their risk factors, early detection methods, and ways to reduce your risk through lifestyle changes and screenings.',
                               style: TextStyle(
@@ -377,7 +377,7 @@ class HomeScreen extends StatelessWidget {
                               height: 250,
                               fit: BoxFit.cover,
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             const Text(
                               'Mental Health Awareness',
                               style: TextStyle(
@@ -386,7 +386,7 @@ class HomeScreen extends StatelessWidget {
                                 color: Colors.black,
                               ),
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             const Text(
                               'Articles and videos explaining common mental health disorders, their symptoms, treatment options, and coping strategies.',
                               style: TextStyle(
@@ -413,7 +413,7 @@ class HomeScreen extends StatelessWidget {
                               height: 250,
                               fit: BoxFit.cover,
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             const Text(
                               'Chronic Pain Management',
                               style: TextStyle(
@@ -422,7 +422,7 @@ class HomeScreen extends StatelessWidget {
                                 color: Colors.black,
                               ),
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             const Text(
                               'Tips and techniques for managing chronic pain conditions, including medication, physical therapy, and alternative treatments.',
                               style: TextStyle(
@@ -437,11 +437,9 @@ class HomeScreen extends StatelessWidget {
                     ),
                     Card(
                       elevation: 6,
-                      margin: const EdgeInsets.only(
-                          bottom: 16.0), // Margin below the card
+                      margin: const EdgeInsets.only(bottom: 16.0),
                       child: Padding(
-                        padding: const EdgeInsets.all(
-                            16.0), // Padding inside the card
+                        padding: const EdgeInsets.all(16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -451,7 +449,7 @@ class HomeScreen extends StatelessWidget {
                               height: 250,
                               fit: BoxFit.cover,
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             const Text(
                               'Respiratory Health',
                               style: TextStyle(
@@ -460,7 +458,7 @@ class HomeScreen extends StatelessWidget {
                                 color: Colors.black,
                               ),
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             const Text(
                               'Insights into respiratory conditions like asthma and COPD, including symptoms, triggers, and management strategies.',
                               style: TextStyle(
@@ -476,7 +474,7 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

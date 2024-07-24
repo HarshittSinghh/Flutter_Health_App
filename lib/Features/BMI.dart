@@ -38,6 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   var result = "";
   var status = "";
+  String? imagePath;
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
               "BMI Calculator",
@@ -116,22 +116,24 @@ class _MyHomePageState extends State<MyHomePage> {
                   double heightInMeters = (feet * 0.3048) + (inches * 0.0254);
                   double bmi = weight / (heightInMeters * heightInMeters);
                   setState(() {
-                    result =
-                        "Your BMI: ${bmi.toStringAsFixed(2)}"; 
+                    result = "Your BMI: ${bmi.toStringAsFixed(2)}"; 
                     if (bmi > 25) {
+                      imagePath = 'assets/img/Overweight.jpg';
                       status = "You are Overweight"; 
+                      
                     } else if (bmi < 18) {
+                      imagePath = 'assets/img/Underweight.jpg';
                       status = "You're Underweight"; 
                     } else {
+                      imagePath = 'assets/img/healthy.gif';
                       status = "You are Healthy"; 
                     }
                   });
                 } else {
                   setState(() {
-                    result =
-                        "Please fill all the details"; // Updated result message
-                    status =
-                        ""; // Clear status message if details are incomplete
+                    result = "Please fill all the details";
+                    status = "";
+                    imagePath = null; 
                   });
                 }
               },
@@ -143,17 +145,25 @@ class _MyHomePageState extends State<MyHomePage> {
               style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.deepPurple), // Updated result text style
-              textAlign: TextAlign.center, // Center the text
+                  color: Colors.deepPurple),
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
-            Text(
+          
+            if (imagePath != null)
+              Image.asset(
+                imagePath!,
+                height: 300,
+                width: 100,
+                fit: BoxFit.cover,
+              ),
+              Text(
               status,
               style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.purple), 
-              textAlign: TextAlign.center, 
+                  color: Colors.purple),
+              textAlign: TextAlign.center,
             ),
           ],
         ),

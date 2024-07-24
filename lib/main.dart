@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'login.dart';
 import 'home_page.dart';
 
 void main() {
@@ -9,10 +10,9 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return  MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Health App',
-      home: const MyHomePage(title: 'Health App'),
+      home: LoginPage(),
     );
   }
 }

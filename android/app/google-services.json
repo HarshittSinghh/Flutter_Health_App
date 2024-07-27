@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1094508268249",
+    "project_id": "geminiapi-5d071",
+    "storage_bucket": "geminiapi-5d071.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1094508268249:android:c4647b456da6b3d46a4cc8",
+        "android_client_info": {
+          "package_name": "com.example.health_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1094508268249-mhbd4i6vvbcgcmvj966ca4cr67lf5o3s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3SR1cCw877b5j7CKwD_kFKU-adR30f7U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1094508268249-mhbd4i6vvbcgcmvj966ca4cr67lf5o3s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

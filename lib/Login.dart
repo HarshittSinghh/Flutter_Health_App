@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:health_app/login.dart';
+import 'package:health_app/Home_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -12,13 +12,17 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _handleSignIn() async {
     try {
-      await _googleSignIn.signIn();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
+      final GoogleSignInAccount? user = await _googleSignIn.signIn();
+      if (user != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
+      } else {
+        print("Sign-in aborted by user");
+      }
     } catch (error) {
-      print(error);
+      print("Sign-in error: $error");
     }
   }
 

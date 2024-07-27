@@ -17,6 +17,7 @@ class _BotScreenState extends State<BotScreen> {
   final model = GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
 
   final List<Message> _messages = [];
+  bool _isLoading = false; // To track loading state
 
   Future<void> sendMessage() async {
     final message = _userMessage.text;
@@ -24,12 +25,17 @@ class _BotScreenState extends State<BotScreen> {
 
     setState(() {
       _messages.add(Message(isUser: true, message: message, date: DateTime.now()));
+      _isLoading = true; // Start loading
     });
+
+    // Simulate a delay for loading animation
+    await Future.delayed(Duration(seconds: 1)); // Adjust delay as needed
 
     final content = [Content.text(message)];
     final response = await model.generateContent(content);
     setState(() {
       _messages.add(Message(isUser: false, message: response.text ?? "", date: DateTime.now()));
+      _isLoading = false; // End loading
     });
   }
 
@@ -40,12 +46,12 @@ class _BotScreenState extends State<BotScreen> {
         title: const Text(
           'Enter Your Symptoms Below..!!',
           style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
+            color: Colors.deepPurple,
+            fontSize: 15,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.grey[50],
         elevation: 0,
       ),
       body: Stack(
@@ -70,6 +76,18 @@ class _BotScreenState extends State<BotScreen> {
                   },
                 ),
               ),
+              if (_isLoading) // Show loading indicator if loading
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(), // Loading spinner
+                      const SizedBox(width: 10),
+                      Text('Gemini is typing...'),
+                    ],
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(

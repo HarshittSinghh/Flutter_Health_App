@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pedometer/pedometer.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const StepCounterApp());
@@ -32,6 +33,7 @@ class StepCounterHomePage extends StatefulWidget {
 class _StepCounterHomePageState extends State<StepCounterHomePage> {
   late Stream<StepCount> _stepCountStream;
   int _steps = 0;
+  String _status = 'Unknown';
 
   @override
   void initState() {
@@ -43,8 +45,11 @@ class _StepCounterHomePageState extends State<StepCounterHomePage> {
     var status = await Permission.activityRecognition.request();
     if (status.isGranted) {
       _initPedometer();
+      _loadSteps();
     } else {
-      print('Permission not granted');
+      setState(() {
+        _status = 'Permission not granted';
+      });
     }
   }
 
@@ -57,19 +62,43 @@ class _StepCounterHomePageState extends State<StepCounterHomePage> {
     setState(() {
       _steps = event.steps;
     });
+    _saveSteps(event.steps);
   }
 
   void _onStepCountError(error) {
     print('Step Count Error: $error');
   }
 
+  Future<void> _saveSteps(int steps) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('steps', steps);
+  }
+
+  Future<void> _loadSteps() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _steps = prefs.getInt('steps') ?? 0;
+    });
+  }
+
+  void _resetSteps() async {
+    setState(() {
+      _steps = 0;
+    });
+    await _saveSteps(0);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Step Counter'),
+        title: const Text(
+          'Step Counter',
+        ),
         centerTitle: true,
+        backgroundColor: Colors.white,
       ),
+      backgroundColor: Colors.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -77,28 +106,27 @@ class _StepCounterHomePageState extends State<StepCounterHomePage> {
             Icon(
               Icons.directions_walk,
               size: 100,
-              color: Colors.blue,
+              color: Colors.deepPurple,
             ),
             const SizedBox(height: 20),
             const Text(
               'Steps taken:',
-              style: TextStyle(fontSize: 24),
+              style: TextStyle(
+                fontSize: 24,
+                color: Colors.deepPurple,
+              ),
             ),
             Text(
               '$_steps',
               style: TextStyle(
                 fontSize: 48,
                 fontWeight: FontWeight.bold,
-                color: Colors.blue,
+                color: Colors.deepPurple,
               ),
             ),
             const SizedBox(height: 20),
             ElevatedButton.icon(
-              onPressed: () {
-                setState(() {
-                  _steps = 0;
-                });
-              },
+              onPressed: _resetSteps,
               icon: Icon(Icons.refresh),
               label: Text('Reset Steps'),
               style: ElevatedButton.styleFrom(
@@ -106,8 +134,15 @@ class _StepCounterHomePageState extends State<StepCounterHomePage> {
                 textStyle: TextStyle(fontSize: 18),
               ),
             ),
+            if (_status != 'Unknown')
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Text(
+                  _status,
+                  style: TextStyle(fontSize: 16, color: Colors.redAccent),
+                ),
+              ),
           ],
-          
         ),
       ),
     );

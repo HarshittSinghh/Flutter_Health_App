@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:health_app/Features/BMI.dart';
 import 'package:health_app/Features/Step_Counter.dart';
+import 'package:health_app/Features/sleep_tracker.dart';
 import 'chat_bot.dart';
 
 void main() {
@@ -76,11 +77,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.black, Colors.deepPurpleAccent],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: Colors.white,
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -142,7 +139,7 @@ class HomeScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: Colors.black,
                   letterSpacing: 1.2,
                 ),
               ),
@@ -163,7 +160,7 @@ class HomeScreen extends StatelessWidget {
                       },
                       child: Card(
                         elevation: 6,
-                        color: Colors.teal[200],
+                        color: Colors.white,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Image.asset(
@@ -187,7 +184,7 @@ class HomeScreen extends StatelessWidget {
                       },
                       child: Card(
                         elevation: 6,
-                        color: Colors.teal[200],
+                        color: Colors.white,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Image.asset(
@@ -198,6 +195,30 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                 Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>SleepDetector(),
+                          ),
+                        );
+                      },
+                      child: Card(
+                        elevation: 6,
+                        color: Colors.white,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(
+                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4xzZoudIpqDQO7x5gKb29mYHgHV1jcLJTshJ06mUTxXorL33dRIfhB38rwYU9GepcraI&usqp=CAU',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+               
                 ],
               ),
             ),
@@ -209,7 +230,7 @@ class HomeScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: Colors.black,
                   letterSpacing: 1.2,
                 ),
               ),
@@ -222,6 +243,7 @@ class HomeScreen extends StatelessWidget {
                     Card(
                       elevation: 6,
                       margin: const EdgeInsets.only(bottom: 16.0),
+                      color: Colors.white,
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
@@ -247,6 +269,7 @@ class HomeScreen extends StatelessWidget {
                               'A comprehensive guide on what high blood pressure is, its causes, symptoms, and how to manage it through lifestyle changes, medication, and regular monitoring.',
                               style: TextStyle(
                                 fontSize: 16,
+                                fontWeight: FontWeight.bold,
                                 color: Colors.black54,
                               ),
                               textAlign: TextAlign.left,
@@ -258,6 +281,7 @@ class HomeScreen extends StatelessWidget {
                     Card(
                       elevation: 6,
                       margin: const EdgeInsets.only(bottom: 16.0),
+                      color: Colors.white,
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
@@ -283,6 +307,7 @@ class HomeScreen extends StatelessWidget {
                               'Detailed information on the different types of diabetes (Type 1 and Type 2), their symptoms, and effective strategies for managing blood sugar levels, including diet and exercise tips.',
                               style: TextStyle(
                                 fontSize: 16,
+                                fontWeight: FontWeight.bold,
                                 color: Colors.black54,
                               ),
                               textAlign: TextAlign.left,
@@ -294,6 +319,7 @@ class HomeScreen extends StatelessWidget {
                     Card(
                       elevation: 6,
                       margin: const EdgeInsets.only(bottom: 16.0),
+                      color: Colors.white,
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
@@ -320,6 +346,7 @@ class HomeScreen extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.black54,
+                                fontWeight: FontWeight.bold,
                               ),
                               textAlign: TextAlign.left,
                             ),
@@ -330,6 +357,7 @@ class HomeScreen extends StatelessWidget {
                     Card(
                       elevation: 6,
                       margin: const EdgeInsets.only(bottom: 16.0),
+                      color: Colors.white,
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
@@ -356,6 +384,7 @@ class HomeScreen extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.black54,
+                                fontWeight: FontWeight.bold,
                               ),
                               textAlign: TextAlign.left,
                             ),
@@ -366,6 +395,7 @@ class HomeScreen extends StatelessWidget {
                     Card(
                       elevation: 6,
                       margin: const EdgeInsets.only(bottom: 16.0),
+                      color: Colors.white,
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
@@ -392,6 +422,7 @@ class HomeScreen extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.black54,
+                                fontWeight: FontWeight.bold,
                               ),
                               textAlign: TextAlign.left,
                             ),
@@ -402,6 +433,7 @@ class HomeScreen extends StatelessWidget {
                     Card(
                       elevation: 6,
                       margin: const EdgeInsets.only(bottom: 16.0),
+                      color: Colors.white,
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
@@ -428,6 +460,7 @@ class HomeScreen extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.black54,
+                                fontWeight: FontWeight.bold,
                               ),
                               textAlign: TextAlign.left,
                             ),
@@ -438,6 +471,7 @@ class HomeScreen extends StatelessWidget {
                     Card(
                       elevation: 6,
                       margin: const EdgeInsets.only(bottom: 16.0),
+                      color: Colors.white,
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
@@ -464,6 +498,7 @@ class HomeScreen extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.black54,
+                                fontWeight: FontWeight.bold,
                               ),
                               textAlign: TextAlign.left,
                             ),

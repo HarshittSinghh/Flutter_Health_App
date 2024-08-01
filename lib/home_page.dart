@@ -3,6 +3,7 @@ import 'package:health_app/Features/BMI.dart';
 import 'package:health_app/Features/Step_Counter.dart';
 import 'package:health_app/Features/sleep_tracker.dart';
 import 'chat_bot.dart';
+import 'package:health_app/drawer.dart';
 
 void main() {
   runApp(const MyApp());
@@ -48,10 +49,46 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
-        title: Text(widget.title, style: const TextStyle(color: Colors.white)),
-        centerTitle: true,
-        elevation: 0,
+        title: const Text(
+          'Gemini Health',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(
+              Icons.menu_rounded,
+              color: Colors.white,
+              size: 32.0,
+            ),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
+         actions: <Widget>[
+    IconButton(
+      icon:const Icon(
+        Icons.notification_add_sharp,
+        color: Colors.white,
       ),
+      onPressed: () {
+        // do something
+      },
+    ),
+     IconButton(
+      icon: const Icon(
+        Icons.person,
+        color: Colors.white,
+      ),
+      onPressed: () {
+        // do something
+      },
+    ),
+  ],
+      ),
+      drawer: AppDrawer(), 
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -195,13 +232,13 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                 Expanded(
+                  Expanded(
                     child: InkWell(
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>SleepDetector(),
+                            builder: (context) => SleepDetector(),
                           ),
                         );
                       },
@@ -218,8 +255,20 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-               
                 ],
+              ),
+            ),
+              const SizedBox(height: 10),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: const Text(
+                'Essential Health Insights',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  letterSpacing: 1.2,
+                ),
               ),
             ),
             const SizedBox(height: 10),

@@ -14,6 +14,13 @@ class _SleepDetectorState extends State<SleepDetector> {
   DateTime? _sleepEndTime;
   String _errorMessage = '';
 
+  // Thresholds
+  final double _sleepMagnitudeThreshold = 1;
+  final Duration _inactivityDurationThreshold = Duration(seconds: 30);
+  final double _significantMotionThreshold = 2.0; // Adjust this value as needed
+
+  DateTime? _lastMovementTime;
+
   @override
   void initState() {
     super.initState();
@@ -25,6 +32,7 @@ class _SleepDetectorState extends State<SleepDetector> {
       accelerometerEvents.listen((AccelerometerEvent event) {
         setState(() {
           _accelerometerValues = <double>[event.x, event.y, event.z];
+          _lastMovementTime = DateTime.now();
           _detectSleep();
         });
       });
@@ -36,34 +44,51 @@ class _SleepDetectorState extends State<SleepDetector> {
   }
 
   void _detectSleep() {
-    double magnitude = sqrt(
-      pow(_accelerometerValues[0], 2) +
-      pow(_accelerometerValues[1], 2) +
-      pow(_accelerometerValues[2], 2)
-    );
+    if (_lastMovementTime == null) return;
 
-    if (magnitude < 0.5) {
+    // Compute the magnitude of the accelerometer data
+    double magnitude = sqrt(pow(_accelerometerValues[0], 2) +
+        pow(_accelerometerValues[1], 2) +
+        pow(_accelerometerValues[2], 2));
+
+    DateTime now = DateTime.now();
+    bool hasBeenInactiveForLongEnough =
+        now.difference(_lastMovementTime!) > _inactivityDurationThreshold;
+
+    print('Magnitude: $magnitude');
+    print('Last Movement Time: ${_lastMovementTime}');
+    print('Current Time: $now');
+    print('Has Been Inactive Long Enough: $hasBeenInactiveForLongEnough');
+
+    if (magnitude < _sleepMagnitudeThreshold && hasBeenInactiveForLongEnough) {
+      // Only consider sleep if inactivity is above the threshold
       if (!_isSleeping) {
         _isSleeping = true;
-        _sleepStartTime = DateTime.now();
+        _sleepStartTime = now;
+        print('User is now considered asleep');
       }
-    } else {
+    } else if (magnitude >= _significantMotionThreshold) {
+      // Large motion detected, consider user awake
       if (_isSleeping) {
         _isSleeping = false;
-        _sleepEndTime = DateTime.now();
+        _sleepEndTime = now;
+        print('User is now considered awake');
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<String> accelerometer = _accelerometerValues.map((double v) => v.toStringAsFixed(1)).toList();
+    final List<String> accelerometer =
+        _accelerometerValues.map((double v) => v.toStringAsFixed(1)).toList();
 
     String sleepDurationText = 'N/A';
     if (_isSleeping && _sleepStartTime != null) {
       final sleepDuration = DateTime.now().difference(_sleepStartTime!);
       sleepDurationText = '${sleepDuration.inMinutes} minutes';
-    } else if (!_isSleeping && _sleepStartTime != null && _sleepEndTime != null) {
+    } else if (!_isSleeping &&
+        _sleepStartTime != null &&
+        _sleepEndTime != null) {
       final sleepDuration = _sleepEndTime!.difference(_sleepStartTime!);
       sleepDurationText = '${sleepDuration.inMinutes} minutes';
     }
@@ -116,15 +141,18 @@ class _SleepDetectorState extends State<SleepDetector> {
                           SizedBox(height: 20),
                           Text(
                             'X: ${accelerometer[0]}',
-                            style: TextStyle(fontSize: 18, color: Colors.white70),
+                            style:
+                                TextStyle(fontSize: 18, color: Colors.white70),
                           ),
                           Text(
                             'Y: ${accelerometer[1]}',
-                            style: TextStyle(fontSize: 18, color: Colors.white70),
+                            style:
+                                TextStyle(fontSize: 18, color: Colors.white70),
                           ),
                           Text(
                             'Z: ${accelerometer[2]}',
-                            style: TextStyle(fontSize: 18, color: Colors.white70),
+                            style:
+                                TextStyle(fontSize: 18, color: Colors.white70),
                           ),
                           SizedBox(height: 20),
                           Text(
@@ -132,7 +160,9 @@ class _SleepDetectorState extends State<SleepDetector> {
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
-                              color: _isSleeping ? Colors.greenAccent : Colors.redAccent,
+                              color: _isSleeping
+                                  ? Colors.greenAccent
+                                  : Colors.redAccent,
                             ),
                           ),
                           SizedBox(height: 20),

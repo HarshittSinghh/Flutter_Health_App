@@ -43,7 +43,10 @@ dependencies:
   sensors_plus: ^5.0.1
   shared_preferences: ^2.2.3
   cached_network_image: ^3.3.1
-  google_maps_flutter: ^2.7.0
+  google_maps_flutter: ^2.7.1
+  heart_bpm: ^2.0.0+0
+  flutter_local_notifications: ^17.2.1+2
+  location: ^7.0.0
 
 dev_dependencies:
   flutter_test:

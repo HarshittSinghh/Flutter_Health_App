@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class IntroHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -12,7 +15,7 @@ class IntroHomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildBanner(),
+                  _buildBanner(user),
                   SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -92,9 +95,10 @@ class IntroHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBanner() {
+  Widget _buildBanner(User? user) {
     return Container(
       height: 300,
+      width: double.infinity,
       decoration: BoxDecoration(
         image: DecorationImage(
           image: NetworkImage('https://www.way2smile.ae/blog/wp-content/uploads/2018/11/blogbg.jpg'),
@@ -102,22 +106,42 @@ class IntroHomeScreen extends StatelessWidget {
         ),
         borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
       ),
-      child: Center(
-        child: Text(
-          'Welcome to HealthVista',
-          style: TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            shadows: [
-              Shadow(
-                blurRadius: 10.0,
-                color: Colors.black.withOpacity(0.5),
-                offset: Offset(0, 4),
-              ),
-            ],
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            'Hi ${user?.displayName ?? 'User'}',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade300,
+              shadows: [
+                Shadow(
+                  blurRadius: 8.0,
+                  color: Colors.black.withOpacity(0.5),
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
           ),
-        ),
+          SizedBox(height: 2),
+          Text(
+            'Welcome to HealthVista',
+            style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              shadows: [
+                Shadow(
+                  blurRadius: 10.0,
+                  color: Colors.black.withOpacity(0.5),
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

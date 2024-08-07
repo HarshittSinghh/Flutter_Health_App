@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'Home_page.dart';
 
 class IntroScreen extends StatefulWidget {
@@ -19,7 +18,7 @@ class _IntroScreenState extends State<IntroScreen> {
           Container(
             width: double.infinity,
             height: MediaQuery.of(context).size.height * 0.67,
-            decoration: BoxDecoration(
+            decoration:const BoxDecoration(
               image: DecorationImage(
                 image: NetworkImage(
                   'https://www.qupapp.com/assets/img/doctor-1.jpg',
@@ -31,10 +30,10 @@ class _IntroScreenState extends State<IntroScreen> {
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
+              child: const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
+                  Text(
                     'Welcome to Our App!',
                     style: TextStyle(
                       fontSize: 24,
@@ -42,8 +41,8 @@ class _IntroScreenState extends State<IntroScreen> {
                       color: Colors.deepPurple,
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  const Text(
+                  SizedBox(height: 10),
+                  Text(
                     'We are excited to have you here. This app will help you achieve your health goals with ease and efficiency.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -63,7 +62,7 @@ class _IntroScreenState extends State<IntroScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const MyHomePage(
-                      title: 'Gemini Health',
+                      title: 'HealthVista',
                     ),
                   ),
                 );

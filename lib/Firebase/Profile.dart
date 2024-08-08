@@ -11,17 +11,22 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String? _profileImageUrl;
-  final contactController = TextEditingController();
+  final phoneController = TextEditingController();
+  final genderController = TextEditingController();
+  final dobController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _fetchProfileImage();
+    _fetchUserDetails();
   }
 
   @override
   void dispose() {
-    contactController.dispose();
+    phoneController.dispose();
+    genderController.dispose();
+    dobController.dispose();
     super.dispose();
   }
 
@@ -39,28 +44,68 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  Future<void> _fetchUserDetails() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final userDoc = await FirebaseFirestore.instance.collection('User').doc(user.uid).get();
+        final data = userDoc.data();
+        if (data != null) {
+          phoneController.text = data['mobile'] ?? '';
+          genderController.text = data['gender'] ?? '';
+          dobController.text = data['dob'] ?? '';
+        }
+      }
+    } catch (e) {
+      print("Failed to fetch user details: $e");
+    }
+  }
+
   void _editProfile() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Edit Profile'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: contactController,
-                decoration: InputDecoration(labelText: 'Contact Number'),
-              ),
-            ],
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: phoneController,
+                  decoration: InputDecoration(labelText: 'Contact Number'),
+                ),
+                TextField(
+                  controller: genderController,
+                  decoration: InputDecoration(labelText: 'Gender'),
+                ),
+                TextField(
+                  controller: dobController,
+                  decoration: InputDecoration(labelText: 'Date of Birth'),
+                ),
+              ],
+            ),
           ),
           actions: [
             ElevatedButton(
-              onPressed: () {
-                CollectionReference collRef = FirebaseFirestore.instance.collection('User');
-                collRef.doc(FirebaseAuth.instance.currentUser!.uid).update({
-                  'mobile': contactController.text,
-                });
+              onPressed: () async {
+                final user = FirebaseAuth.instance.currentUser;
+                if (user != null) {
+                  try {
+                    await FirebaseFirestore.instance.collection('User').doc(user.uid).update({
+                      'mobile': phoneController.text,
+                      'gender': genderController.text,
+                      'dob': dobController.text,
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Profile updated successfully')),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Failed to update profile: $e')),
+                    );
+                  }
+                }
                 Navigator.of(context).pop();
               },
               child: Text('Save'),
@@ -90,7 +135,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 await FirebaseAuth.instance.signOut();
                 Navigator.of(context).pop();
                 Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => LoginPage()), // Navigate to login page
+                  MaterialPageRoute(builder: (context) => LoginPage()),
                 );
               },
               child: Text('Yes'),
@@ -138,12 +183,10 @@ class _ProfilePageState extends State<ProfilePage> {
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => LoginPage()), // Navigate to login page
+                    MaterialPageRoute(builder: (context) => LoginPage()), 
                   );
                 },
                 child: Text('Login'),
-                style: ElevatedButton.styleFrom(
-                ),
               ),
             ],
           ),
@@ -189,32 +232,65 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           children: [
             Container(
+              color: Colors.deepPurple,
               padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-              child: Material(
-                elevation: 5,
-                borderRadius: BorderRadius.circular(120),
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                child: InkWell(
-                  splashColor: Colors.black54,
-                  child: Ink.image(
-                    image: photoURL != null
-                        ? NetworkImage(photoURL)
-                        : AssetImage('assets/default_profile.png') as ImageProvider,
-                    height: 215,
-                    width: 215,
-                    fit: BoxFit.cover,
+              child: Center(
+                child: Material(
+                  elevation: 5,
+                  borderRadius: BorderRadius.circular(120),
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  child: InkWell(
+                    splashColor: Colors.black54,
+                    child: Ink.image(
+                      image: photoURL != null
+                          ? NetworkImage(photoURL)
+                          : AssetImage('assets/default_profile.png') as ImageProvider,
+                      height: 150,
+                      width: 150,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
             ),
-            Container(height: 10),
-            Text(
-              user.displayName ?? 'No Name',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            Text(
-              user.email ?? 'No Email',
-              style: Theme.of(context).textTheme.bodySmall,
+
+            Container(height: 30),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Name:',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        user.displayName ?? 'No Name',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Email:',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        user.email ?? 'No Email',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black54),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
             Container(height: 20),
             SizedBox(
@@ -242,68 +318,35 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
             Container(
-              height: MediaQuery.of(context).size.height,
-              child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance.collection('User').snapshots(),
+              height: MediaQuery.of(context).size.height * 0.45,
+              padding: const EdgeInsets.all(16.0),
+              child: StreamBuilder<DocumentSnapshot>(
+                stream: FirebaseFirestore.instance.collection('User').doc(user.uid).snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());
                   }
-                  if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
+                  if (!snapshot.hasData || snapshot.hasError) {
+                    return Center(child: Text('Failed to load user details'));
                   }
-                  final userDocs = snapshot.data?.docs.toList();
-                  if (userDocs == null || userDocs.isEmpty) {
-                    return Center(child: Text('No user details found.'));
-                  }
-                  return ListView.builder(
-                    itemCount: userDocs.length,
-                    itemBuilder: (context, index) {
-                      final user = userDocs[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10.0),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 2,
-                                blurRadius: 5,
-                                offset: Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          padding: EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Mobile: ${user['mobile']}',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      // Delete the document from Firestore
-                                      FirebaseFirestore.instance.collection('User').doc(user.id).delete();
-                                    },
-                                    icon: Icon(Icons.delete),
-                                    color: Colors.red,
-                                  ),
-                                ],
-                              ),
-                              Divider(color: Colors.grey),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
+
+                  final data = snapshot.data?.data() as Map<String, dynamic>?;
+
+                  return ListView(
+                    children: [
+                      ListTile(
+                        title: Text('Contact Number'),
+                        subtitle: Text(data?['mobile'] ?? 'Not available'),
+                      ),
+                      ListTile(
+                        title: Text('Gender'),
+                        subtitle: Text(data?['gender'] ?? 'Not available'),
+                      ),
+                      ListTile(
+                        title: Text('Date of Birth'),
+                        subtitle: Text(data?['dob'] ?? 'Not available'),
+                      ),
+                    ],
                   );
                 },
               ),

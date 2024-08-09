@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'dart:typed_data';
+import 'dart:convert';
 
 class BotScreen extends StatefulWidget {
   const BotScreen({super.key});
@@ -17,7 +21,7 @@ class _BotScreenState extends State<BotScreen> {
   final model = GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
 
   final List<Message> _messages = [];
-  bool _isLoading = false; 
+  bool _isLoading = false;
 
   Future<void> sendMessage() async {
     final message = _userMessage.text;
@@ -25,7 +29,7 @@ class _BotScreenState extends State<BotScreen> {
 
     setState(() {
       _messages.add(Message(isUser: true, message: message, date: DateTime.now()));
-      _isLoading = true; 
+      _isLoading = true;
     });
 
     // Simulate a delay for loading animation
@@ -34,9 +38,48 @@ class _BotScreenState extends State<BotScreen> {
     final content = [Content.text(message)];
     final response = await model.generateContent(content);
     setState(() {
-      _messages.add(Message(isUser: false, message: response.text ?? "", date: DateTime.now()));
-      _isLoading = false; 
+      _messages.add(Message(isUser: false, message: response.text ?? "No response", date: DateTime.now()));
+      _isLoading = false;
     });
+  }
+
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      final file = File(image.path);
+      final bytes = await file.readAsBytes();
+      final base64Image = base64Encode(bytes);
+
+      final imageMessage = Message(
+        isUser: true,
+        message: base64Image,
+        date: DateTime.now(),
+        isImage: true,
+      );
+
+      setState(() {
+        _messages.add(imageMessage);
+        _isLoading = true;
+      });
+      // Simulate a delay for loading animation
+      await Future.delayed(Duration(seconds: 1));
+
+      // Gemini API response for image
+      final response = await model.generateContent(
+        [Content.text("Image sent")]
+      );
+
+      setState(() {
+        _messages.add(Message(
+          isUser: false,
+          message: response.text ?? "Image received",
+          date: DateTime.now(),
+        ));
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -57,7 +100,7 @@ class _BotScreenState extends State<BotScreen> {
       body: Stack(
         children: [
           Container(
-            color: Colors.grey[100], 
+            color: Colors.grey[100],
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -72,18 +115,19 @@ class _BotScreenState extends State<BotScreen> {
                       isUser: message.isUser,
                       message: message.message,
                       date: DateFormat('HH:mm').format(message.date),
+                      isImage: message.isImage,
                     );
                   },
                 ),
               ),
               if (_isLoading)
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CircularProgressIndicator(), 
-                      const SizedBox(width: 10),
+                      CircularProgressIndicator(),
+                      SizedBox(width: 10),
                       Text('Gemini is typing...'),
                     ],
                   ),
@@ -115,6 +159,12 @@ class _BotScreenState extends State<BotScreen> {
                       backgroundColor: Colors.deepPurple,
                       child: const Icon(Icons.send, color: Colors.white),
                     ),
+                    const SizedBox(width: 10),
+                    FloatingActionButton(
+                      onPressed: _pickImage,
+                      backgroundColor: Colors.deepPurple,
+                      child: const Icon(Icons.image, color: Colors.white),
+                    ),
                   ],
                 ),
               ),
@@ -130,11 +180,14 @@ class Messages extends StatelessWidget {
   final bool isUser;
   final String message;
   final String date;
+  final bool isImage;
+
   const Messages({
     super.key,
     required this.isUser,
     required this.message,
     required this.date,
+    this.isImage = false,
   });
 
   @override
@@ -165,13 +218,20 @@ class Messages extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            message,
-            style: TextStyle(
-              color: isUser ? Colors.white : Colors.black87,
-              fontSize: 16,
-            ),
-          ),
+          isImage
+              ? Image.memory(
+                  base64Decode(message),
+                  fit: BoxFit.cover,
+                  width: 200, 
+                  height: 200, 
+                )
+              : Text(
+                  message,
+                  style: TextStyle(
+                    color: isUser ? Colors.white : Colors.black87,
+                    fontSize: 16,
+                  ),
+                ),
           Align(
             alignment: Alignment.bottomRight,
             child: Text(
@@ -192,10 +252,12 @@ class Message {
   final bool isUser;
   final String message;
   final DateTime date;
+  final bool isImage; 
 
   Message({
     required this.isUser,
     required this.message,
     required this.date,
+    this.isImage = false,
   });
 }
